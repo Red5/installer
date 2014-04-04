@@ -1,0 +1,243 @@
+<?xml version="1.0"?>
+<project name="Red5" default="all" basedir=".">
+
+<description>
+Red5 for Mac OSX
+</description>
+
+	<!-- Include build configuration -->
+	<property file="${basedir}/build.properties" />
+
+	<!-- Init build properties -->
+	<property name="BUILD_DIR" value="${basedir}/build"/>
+	<property name="DIST_DIR" value="${basedir}/dist"/>
+	<property name="RESOURCES_DIR" value="${basedir}/resources"/>
+	<property name="TOOLS_DIR" value="${basedir}/tools"/>
+	<property name="PLISTS_DIR" value="${basedir}/plists"/>
+	<property name="IMAGE_CONTENTS" value="${BUILD_DIR}/imagecontents"/>
+	<property name="PACKAGE_CONTENTS" value="${BUILD_DIR}/packages"/>
+	<property name="DOCS_PACKAGE_NAME" value="docs"/>
+	<property name="DOCS_PACKAGE" value="${PLISTS_DIR}/${DOCS_PACKAGE_NAME}"/>
+	<property name="FLASH_PACKAGE_NAME" value="flash"/>
+	<property name="FLASH_PACKAGE" value="${PLISTS_DIR}/${FLASH_PACKAGE_NAME}"/>
+	<property name="MAIN_PACKAGE_NAME" value="main"/>
+	<property name="MAIN_PACKAGE" value="${PLISTS_DIR}/${MAIN_PACKAGE_NAME}"/>
+	<property name="SOURCE_PACKAGE_NAME" value="source"/>
+	<property name="SOURCE_PACKAGE" value="${PLISTS_DIR}/${SOURCE_PACKAGE_NAME}"/>
+	<property name="META_PACKAGE_NAME" value="release"/>
+	<property name="META_PACKAGE" value="${PLISTS_DIR}/${META_PACKAGE_NAME}"/>
+	<property name="RELEASE_NAME" value="red5-${VERSION}"/>
+	<property name="FANCY_NAME" value="Red5 v${VERSION}"/>
+	<property name="DMG_NAME" value="setup-${RELEASE_NAME}.dmg"/>
+	<property name="MPKG_NAME" value="Install-${RELEASE_NAME}.mpkg"/>
+	<property name="PACKAGE_MAKER" value="/Developer/Tools/packagemaker"/>
+	<property name="SET_FILE" value="/Developer/Tools/SetFile"/>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: all                      
+    - - - - - - - - - - - - - - - - - -->
+    <target name="all" depends="clean, prepare, compile, package, release">
+    	<echo>Completed building ${FANCY_NAME} for ${os.name}</echo>
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: clean                      
+    - - - - - - - - - - - - - - - - - -->
+    <target name="clean" description="Clean build folders">
+    	<delete 
+    		dir="${BUILD_DIR}" 
+    		failOnError="false" 
+    		includeEmptyDirs="true" />
+	<delete 
+    		dir="${DIST_DIR}" 
+    		failOnError="false" 
+    		includeEmptyDirs="true" />
+    </target>
+	
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: prepare                      
+    - - - - - - - - - - - - - - - - - -->
+    <target name="prepare" description="Create build folders" >
+    	<mkdir dir="${BUILD_DIR}"/>
+	<mkdir dir="${IMAGE_CONTENTS}"/>
+	<mkdir dir="${DIST_DIR}"/>
+	<mkdir dir="${PACKAGE_CONTENTS}"/>
+	<mkdir dir="${BUILD_DIR}/${DOCS_PACKAGE_NAME}"/>
+	<mkdir dir="${BUILD_DIR}/${FLASH_PACKAGE_NAME}"/>
+	<mkdir dir="${BUILD_DIR}/${FLASH_PACKAGE_NAME}/swf"/>
+	<mkdir dir="${BUILD_DIR}/${MAIN_PACKAGE_NAME}"/>
+	<mkdir dir="${BUILD_DIR}/${SOURCE_PACKAGE_NAME}"/>
+	<mkdir dir="${BUILD_DIR}/${META_PACKAGE_NAME}"/>
+	<mkdir dir="${BUILD_DIR}/${META_PACKAGE_NAME}/English.lproj"/>
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: compile
+    - - - - - - - - - - - - - - - - - -->
+    <target name="compile" description="Create installer distribution">
+	<exec executable="make" failonerror="true">
+		<arg line='installerdist -C ${SRC_DIR}'/>
+	</exec>
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+            target: package
+    - - - - - - - - - - - - - - - - - -->
+    <target name="package" description="Create installer packages">
+	<echo>Copying plist files...</echo>
+	<copy todir="${BUILD_DIR}/${PLISTS_DIR}">
+    		<fileset dir="${PLISTS_DIR}"/>
+  	</copy>
+	<echo>Copying files for '${DOCS_PACKAGE_NAME}' package...</echo>
+	<copy todir="${BUILD_DIR}/${DOCS_PACKAGE_NAME}/doc">
+    		<fileset dir="${SRC_DIR}/dist/doc"/>
+  	</copy>
+	<echo>Copying files for '${FLASH_PACKAGE_NAME}' package...</echo>
+	<copy todir="${BUILD_DIR}/${FLASH_PACKAGE_NAME}/swf">
+    		<fileset dir="${SRC_DIR}/dist/swf"/>
+  	</copy>
+
+	<echo>Copying files for '${MAIN_PACKAGE_NAME}' package...</echo>
+	<copy todir="${BUILD_DIR}/${MAIN_PACKAGE_NAME}/conf">
+    		<fileset dir="${SRC_DIR}/dist/conf"/>
+  	</copy>
+	<copy todir="${BUILD_DIR}/${MAIN_PACKAGE_NAME}/lib">
+    		<fileset dir="${SRC_DIR}/dist/lib"/>
+  	</copy>
+	<copy todir="${BUILD_DIR}/${MAIN_PACKAGE_NAME}/webapps">
+    		<fileset dir="${SRC_DIR}/dist/webapps"/>
+  	</copy>
+	<copy todir="${BUILD_DIR}/${MAIN_PACKAGE_NAME}" flatten="true">
+	    <resources>
+    		<file file="${SRC_DIR}/dist/license.txt"/>
+		<file file="${SRC_DIR}/dist/red5.jar"/>
+		<file file="${SRC_DIR}/dist/red5.sh"/>
+		<file file="${SRC_DIR}/dist/red5-shutdown.sh"/>
+	    </resources>
+  	</copy>
+	<exec executable="cp" failonerror="true">
+		<arg line='-r ${RESOURCES_DIR}/Red5.app ${BUILD_DIR}/${MAIN_PACKAGE_NAME}'/>
+	</exec>
+	<!-- Update version info -->
+	<updateVersion replaceFile="${BUILD_DIR}/${MAIN_PACKAGE_NAME}/Red5.app/Contents/Info.plist"/>
+	<updateVersion replaceFile="${BUILD_DIR}/${MAIN_PACKAGE_NAME}/Red5.app/Contents/Resources/en.lproj/InfoPlist.strings"/>
+	<exec executable="${SET_FILE}" failonerror="true">
+		<arg line='-a E ${BUILD_DIR}/${MAIN_PACKAGE_NAME}/Red5.app'/>
+	</exec>
+	
+	<echo>Copying files for '${SOURCE_PACKAGE_NAME}' package...</echo>
+	<copy todir="${BUILD_DIR}/${SOURCE_PACKAGE_NAME}/src">
+    		<fileset dir="${SRC_DIR}/dist/src"/>
+  	</copy>
+	<copy todir="${BUILD_DIR}/${SOURCE_PACKAGE_NAME}/test">
+    		<fileset dir="${SRC_DIR}/test"/>
+  	</copy>
+	<copy todir="${BUILD_DIR}/${SOURCE_PACKAGE_NAME}" flatten="true">
+	     <resources>
+    		<file file="${SRC_DIR}/dist/.classpath"/>
+		<file file="${SRC_DIR}/dist/.project"/>
+		<file file="${SRC_DIR}/dist/.springBeans"/>
+		<file file="${SRC_DIR}/dist/build.properties"/>
+		<file file="${SRC_DIR}/dist/build.xml"/>
+		<file file="${SRC_DIR}/dist/ivy.xml"/>
+		<file file="${SRC_DIR}/dist/ivyconfig.xml"/>
+		<file file="${SRC_DIR}/dist/red5-debug.sh"/>
+             </resources>
+  	</copy>
+
+	<echo>Copying files for '${META_PACKAGE_NAME}' package...</echo>
+	<copy todir="${BUILD_DIR}/${META_PACKAGE_NAME}/English.lproj" flatten="true">
+	     <resources>
+    		<file file="${RESOURCES_DIR}/background.gif"/>
+		<file file="${RESOURCES_DIR}/Welcome.txt"/>
+	     </resources>
+  	</copy>
+
+	<!-- Update version info -->
+	<updateVersion replaceFile="${BUILD_DIR}/${META_PACKAGE_NAME}/English.lproj/Welcome.txt"/>
+	<updateVersion replaceFile="${BUILD_DIR}/${PLISTS_DIR}/${DOCS_PACKAGE_NAME}/Info.plist"/>
+	<updateVersion replaceFile="${BUILD_DIR}/${PLISTS_DIR}/${FLASH_PACKAGE_NAME}/Info.plist"/>
+	<updateVersion replaceFile="${BUILD_DIR}/${PLISTS_DIR}/${MAIN_PACKAGE_NAME}/Info.plist"/>
+	<updateVersion replaceFile="${BUILD_DIR}/${PLISTS_DIR}/${SOURCE_PACKAGE_NAME}/Info.plist"/>
+	
+	<!-- Update license and readme for installer -->
+	<copy file="${SRC_DIR}/dist/license.txt" tofile="${BUILD_DIR}/${META_PACKAGE_NAME}/English.lproj/License.txt"/>
+	<copy file="${SRC_DIR}/dist/doc/changelog.txt" tofile="${BUILD_DIR}/${META_PACKAGE_NAME}/English.lproj/ReadMe.txt"/>
+	
+	<!-- Create packages -->
+	<createPackage packageName="${DOCS_PACKAGE_NAME}" package="${DOCS_PACKAGE}"/>
+	<createPackage packageName="${FLASH_PACKAGE_NAME}" package="${FLASH_PACKAGE}"/>
+	<createPackage packageName="${MAIN_PACKAGE_NAME}" package="${MAIN_PACKAGE}"/>
+	<createPackage packageName="${SOURCE_PACKAGE_NAME}" package="${SOURCE_PACKAGE}"/>
+
+	<echo>Creating '${RELEASE_NAME}' metapackage...</echo>
+	<exec executable="${PACKAGE_MAKER}" failonerror="true">
+		<arg line='-build -ds -v'/>
+		<arg line='-p ${IMAGE_CONTENTS}/${MPKG_NAME}'/>
+		<arg line='-f ${IMAGE_CONTENTS}'/>
+		<arg line='-mi ${PACKAGE_CONTENTS}'/>
+		<arg line='-i ${BUILD_DIR}/${META_PACKAGE}/Info.plist'/>
+		<arg line='-d ${BUILD_DIR}/${META_PACKAGE}/Description.plist'/>
+		<arg line='-r ${BUILD_DIR}/${META_PACKAGE_NAME}'/>
+	</exec>
+
+	<echo>Removing old build files...</echo>
+	<delete includeEmptyDirs="true">
+    		<fileset dir="${BUILD_DIR}/${DOCS_PACKAGE_NAME}"/>
+		<fileset dir="${BUILD_DIR}/${FLASH_PACKAGE_NAME}"/>
+		<fileset dir="${BUILD_DIR}/${MAIN_PACKAGE_NAME}"/>
+		<fileset dir="${BUILD_DIR}/${SOURCE_PACKAGE_NAME}"/>
+		<fileset dir="${BUILD_DIR}/${META_PACKAGE_NAME}"/>
+		<fileset dir="${BUILD_DIR}/${PLISTS_DIR}"/>
+		<fileset dir="${PACKAGE_CONTENTS}"/>
+  	</delete>
+
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+            target: release
+    - - - - - - - - - - - - - - - - - -->
+    <target name="release" description="Create disk image for distribution">
+	<echo>Creating disk image...</echo>
+	<exec executable="sh" failonerror="true">
+		<arg line='${TOOLS_DIR}/make-diskimage.sh "${DIST_DIR}/${DMG_NAME}" "${IMAGE_CONTENTS}" "Red5" ${TOOLS_DIR}/dmg_red5.scpt'/>
+	</exec>
+	<!-- Dump MD5 checksum for .dmg file -->
+	<exec executable="md5" failonerror="true">
+		<arg line='${DIST_DIR}/${DMG_NAME}'/>
+	</exec>
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+            macrodef: updateVersion
+    - - - - - - - - - - - - - - - - - -->
+    <macrodef name="updateVersion">
+    	<attribute name="replaceFile"/>                       
+   	<sequential>
+      		<replace file="@{replaceFile}" 
+		 propertyFile="build.properties">
+  			<replacefilter token="@VERSION@" property="VERSION"/>
+			<replacefilter token="@COPYRIGHT@" property="COPYRIGHT"/>
+		</replace>
+   	</sequential>
+    </macrodef>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+            macrodef: createPackage
+    - - - - - - - - - - - - - - - - - -->
+    <macrodef name="createPackage">
+    	<attribute name="packageName"/> 
+	<attribute name="package"/>                     
+   	<sequential>
+		<echo>Creating '@{packageName}' package...</echo>
+      		<exec executable="${PACKAGE_MAKER}" failonerror="true">
+			<arg line='-build -ds -v'/>
+			<arg line='-p ${PACKAGE_CONTENTS}/@{packageName}.pkg'/>
+			<arg line='-f ${BUILD_DIR}/@{packageName}'/>
+			<arg line='-i ${BUILD_DIR}/@{package}/Info.plist'/>
+			<arg line='-d ${BUILD_DIR}/@{package}/Description.plist'/>
+		</exec>
+   	</sequential>
+    </macrodef>
+
+</project>

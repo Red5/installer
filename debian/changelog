@@ -1,0 +1,66 @@
+red5 (0.9.0-RC1) unstable; urgency=low
+
+  * Upgrade to newest red5 upstream release.
+
+ -- Paul Gregoire <mondain@gmail.com>  Mon, 03 Aug 2009 21:19:01 -0700
+
+red5 (0.6.3-1) unstable; urgency=low
+
+  * Upgrade to new red5 upstream release.
+
+ -- Joachim Bauch <jojo@struktur.de>  Tue, 18 Sep 2007 00:35:04 +0100
+
+red5 (0.6.2-1) unstable; urgency=low
+
+  * Upgrade to new red5 upstream release.
+
+ -- Joachim Bauch <jojo@struktur.de>  Tue, 17 Jun 2007 23:07:23 +0200
+
+red5 (0.6.1-1) unstable; urgency=low
+
+  * Upgrade to new red5 upstream release.
+
+ -- Joachim Bauch <jojo@struktur.de>  Tue, 23 Apr 2007 22:58:47 +0200
+
+red5 (0.6-1) unstable; urgency=low
+
+  * Upgrade to new red5 upstream release.
+
+ -- Joachim Bauch <jojo@struktur.de>  Tue, 24 Apr 2007 00:05:18 +0200
+
+red5 (0.6rc3-1) unstable; urgency=low
+
+  * Upgrade to new red5 upstream release.
+
+ -- Joachim Bauch <jojo@struktur.de>  Wed, 11 Apr 2007 19:28:52 +0200
+
+red5 (0.6rc1-1) unstable; urgency=low
+
+  * Upgrade to new red5 upstream release.
+
+ -- Simon Eisenmann <simon@struktur.de>  Mon, 30 Oct 2006 18:50:40 +0100
+
+red5 (0.5-1) unstable; urgency=low
+
+  * Upgrade to new re5 upstream release.
+
+ -- Simon Eisenmann <simon@struktur.de>  Tue, 25 Jul 2006 16:36:04 +0200
+
+red5 (0.5rc1-1) unstable; urgency=low
+
+  * Upgrade to new red5 upstream release with non svn version. 
+
+ -- Simon Eisenmann <simon@struktur.de>  Mon, 17 Jul 2006 15:12:23 +0200
+
+red5 (20060317) unstable; urgency=low
+
+  * Debian build files now part of subversion tree.
+  * Added Makefile.
+
+ -- Simon Eisenmann <simon@struktur.de>  Fri, 17 Mar 2006 16:51:50 +0100
+
+red5 (20060316) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Simon Eisenmann <simon@struktur.de>  Fri, 17 Mar 2006 10:55:36 +0100

@@ -1,0 +1,13 @@
+Source: red5
+Section: web
+Priority: optional
+Maintainer: Paul Gregoire <mondain@gmail.com>
+Build-Depends: debhelper (>= 4.0.0), ant, sun-java6-jdk
+Standards-Version: 3.6.1
+
+Package: red5
+Architecture: all
+Depends: sun-java6-bin
+Description: Red5 flash streaming server 
+ Red5 is a server that not only streams content to the Flash plugin, but it can push calls and information to the Flash client! It can also receive video/audio/data from a flash client and either save or rebroadcast that content.
+

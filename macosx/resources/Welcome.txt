@@ -1,0 +1,6 @@
+
+This will install Red5 @VERSION@ on your computer.
+
+It is recommended that you close all other applications before continuing.
+
+Click Continue to proceed.

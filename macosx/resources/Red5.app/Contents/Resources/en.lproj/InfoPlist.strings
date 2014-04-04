@@ -1,0 +1,4 @@
+CFBundleName = "Red5";
+CFBundleShortVersionString = "@VERSION@";
+CFBundleGetInfoString = "Red5 version @VERSION@ Copyright @COPYRIGHT@";
+NSHumanReadableCopyright = "Copyright @COPYRIGHT@";
