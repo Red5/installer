@@ -1,3 +1,9 @@
+red5 (1.0.2-RELEASE) stable; urgency=high
+
+  * Upgrade to latest release
+
+ -- Paul Gregoire <mondain@gmail.com>  Mon, 7 Apr 2014 10:25:01 -0700
+
 red5 (0.9.0-RC1) unstable; urgency=low
 
   * Upgrade to newest red5 upstream release.
