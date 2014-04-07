@@ -2,7 +2,7 @@
 # Red5 NSIS script for java7 builds
 # Author: Paul Gregoire
 # Date: 09/29/2008
-# Updated: 04/05/2014
+# Updated: 04/07/2014
 #
 
 Name Red5
@@ -16,14 +16,14 @@ RequestExecutionLevel admin
 !define COMPANY "Red5 Server"
 !define DESCRIPTION "Red5 is an Open Source Media Server written in Java"
 !define URL http://red5.googlecode.com
-!define DocumentRoot "..\..\..\doc\trunk"
-!define BuildRoot "..\..\..\java\server\trunk"
-!define DemoRoot "..\..\..\flash\trunk"
+!define BuildRoot "..\..\red5-server"
+!define ServiceRoot "..\..\red5-service"
+!define ImageRoot "..\images"
 
 # MUI defines
-!define MUI_ICON images\red5.ico
+!define MUI_ICON ${ImageRoot}\red5.ico
 !define MUI_HEADERIMAGE
-!define MUI_HEADERIMAGE_BITMAP images\red5_header.bmp
+!define MUI_HEADERIMAGE_BITMAP ${ImageRoot}\red5_header.bmp
 !define MUI_FINISHPAGE_NOAUTOCLOSE
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT HKLM
 !define MUI_STARTMENUPAGE_REGISTRY_KEY ${REGKEY}
@@ -47,7 +47,7 @@ Var /GLOBAL IP_ADDRESS
 
 # Installer pages
 !insertmacro MUI_PAGE_WELCOME
-!insertmacro MUI_PAGE_LICENSE ${DocumentRoot}\licenseInfo\Red5LicenseInfo.txt
+!insertmacro MUI_PAGE_LICENSE ..\Red5LicenseInfo.txt
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_STARTMENU Application $StartMenuGroup
 !insertmacro MUI_PAGE_INSTFILES
@@ -101,8 +101,7 @@ Section -Main SEC0000
     File /r /x .svn lib\*
     ; cd and copy the docs
     SetOutPath $INSTDIR\doc
-	File /r /x .svn ${DocumentRoot}\api
-	File /r /x .svn ${DocumentRoot}\api-client
+	File /r /x .svn ${BuildRoot}\target\apidocs
     ; create the log dir
     SetOutPath $INSTDIR\log
     ; create the temp dir
@@ -118,9 +117,7 @@ Section -post SEC0001
     SetOutPath $SMPROGRAMS\$StartMenuGroup
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Start $(^Name).lnk" $INSTDIR\Red5.bat
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\$(^Name) on the Web.lnk" "http://red5.googlecode.com/"
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\API (server) documents.lnk" $INSTDIR\doc\api\index.html
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\API (client) documents.lnk" $INSTDIR\doc\api-client\index.html
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Eclipse setup.lnk" $INSTDIR\doc\eclipsesetup.html
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\API documents.lnk" $INSTDIR\doc\apidocs\index.html
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Bugtracker.lnk" "https://code.google.com/p/red5/issues/list"
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Wiki.lnk" "https://code.google.com/p/red5/w/list"
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk" $INSTDIR\uninstall.exe
@@ -213,9 +210,7 @@ Section -un.post UNSEC0001
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\$(^Name) on the Web.lnk" 
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Bugtracker.lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Tutorials.lnk"
-    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\API (server) documents.lnk"
-    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\API (client) documents.lnk"
-    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Eclipse setup.lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\API documents.lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk"
     Delete /REBOOTOK $INSTDIR\uninstall.exe
     DeleteRegValue HKLM "${REGKEY}" StartMenuGroup
@@ -235,7 +230,7 @@ SectionEnd
 Function .onInit
     InitPluginsDir
     Push $R1
-    File /oname=$PLUGINSDIR\spltmp.bmp images\red5splash.bmp
+    File /oname=$PLUGINSDIR\spltmp.bmp ${ImageRoot}\red5splash.bmp
     advsplash::show 1000 600 400 -1 $PLUGINSDIR\spltmp
     Pop $R1
     Pop $R1
