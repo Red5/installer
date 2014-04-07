@@ -79,26 +79,16 @@ ShowUninstDetails show
 Section -Main SEC0000
     SetOutPath $INSTDIR
     SetOverwrite on
-    ; copy wrapper files
-    File /r /x .svn bin\*
+    ; copy daemon binaries
+    File /r /x .svn /x .git ${ServiceRoot}\commons-daemon-1.0.15-bin-windows\*.exe
+    ; copy daemon scripts
+    File /r /x .svn /x .git ${ServiceRoot}\src\main\daemon\*.bat
     ; copy the java files
-    File /r /x war /x *.sh /x Makefile /x *.gz /x *.zip ${BuildRoot}\target\dist.java7\*
-    ; cd to webapps root dir
-    SetOutPath $INSTDIR\webapps\root
-	; copy demos
-    File /r /x .svn ${DemoRoot}\deploy	
-    ; rename deploy dir
-    Rename $INSTDIR\webapps\root\deploy $INSTDIR\webapps\root\demos
-    ; cd to conf dir
-    SetOutPath $INSTDIR\conf
-    ; copy wrapper conf
-    File conf\wrapper.conf.in
-    ; rename conf file
-    Rename $INSTDIR\conf\wrapper.conf.in $INSTDIR\conf\wrapper.conf
+    File /r /x war /x *.sh /x Makefile /x *.gz /x *.zip ${BuildRoot}\target\installable\*
     ; cd to lib dir
     SetOutPath $INSTDIR\lib
-    ; copy wrapper libs
-    File /r /x .svn lib\*
+    ; copy daemon lib
+    File /r /x .svn /x .git ${ServiceRoot}\target\dependency\commons-daemon*.jar
     ; cd and copy the docs
     SetOutPath $INSTDIR\doc
 	File /r /x .svn ${BuildRoot}\target\apidocs
@@ -115,7 +105,8 @@ Section -post SEC0001
 
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     SetOutPath $SMPROGRAMS\$StartMenuGroup
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Start $(^Name).lnk" $INSTDIR\Red5.bat
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Start $(^Name).lnk" $INSTDIR\red5.bat
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Stop $(^Name).lnk" $INSTDIR\red5-shutdown.bat
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\$(^Name) on the Web.lnk" "http://red5.googlecode.com/"
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\API documents.lnk" $INSTDIR\doc\apidocs\index.html
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Bugtracker.lnk" "https://code.google.com/p/red5/issues/list"
@@ -207,9 +198,9 @@ SectionEnd
 Section -un.post UNSEC0001
     DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Start $(^Name).lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Stop $(^Name).lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\$(^Name) on the Web.lnk" 
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Bugtracker.lnk"
-    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Tutorials.lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\API documents.lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk"
     Delete /REBOOTOK $INSTDIR\uninstall.exe
