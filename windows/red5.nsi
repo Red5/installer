@@ -80,15 +80,16 @@ Section -Main SEC0000
     SetOutPath $INSTDIR
     SetOverwrite on
     ; copy daemon binaries
-    File /r /x .svn /x .git ${ServiceRoot}\commons-daemon-1.0.15-bin-windows\*.exe
+    File /x .svn /x .git ${ServiceRoot}\commons-daemon-1.0.15-bin-windows\*.exe
     ; copy daemon scripts
-    File /r /x .svn /x .git ${ServiceRoot}\src\main\daemon\*.bat
+    File /x .svn /x .git ${ServiceRoot}\src\main\daemon\*.bat
     ; copy the java files
     File /r /x war /x *.sh /x Makefile /x *.gz /x *.zip ${BuildRoot}\target\installable\*
     ; cd to lib dir
-    SetOutPath $INSTDIR\lib
-    ; copy daemon lib
-    File /r /x .svn /x .git ${ServiceRoot}\target\dependency\commons-daemon*.jar
+    ;SetOutPath $INSTDIR\lib
+    ; copy daemon libs
+    ;File /x .svn /x .git ${ServiceRoot}\target\red5-service*.jar
+    ;File /x .svn /x .git ${ServiceRoot}\target\dependency\commons-daemon*.jar
     ; cd and copy the docs
     SetOutPath $INSTDIR\doc
 	File /r /x .svn ${BuildRoot}\target\apidocs
@@ -169,7 +170,7 @@ Section -post SEC0001
 	Call AdvReplaceInFile
 	
     # Add the service
-    ExecWait '"$INSTDIR\InstallRed5-NT.bat"'
+    ExecWait '"$INSTDIR\install-service.bat"'
     ; send them to osflash
     ExecShell "open" "http://red5.googlecode.com/"
 SectionEnd
@@ -190,7 +191,7 @@ done${UNSECTION_ID}:
 # Uninstaller sections
 Section /o -un.Main UNSEC0000
     # remove the service
-    ExecWait '"$INSTDIR\UninstallRed5-NT.bat"'
+    ExecWait '"$INSTDIR\uninstall-service.bat"'
     RmDir /r /REBOOTOK $INSTDIR
     DeleteRegValue HKLM "${REGKEY}\Components" Main
 SectionEnd

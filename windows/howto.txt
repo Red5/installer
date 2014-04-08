@@ -5,15 +5,7 @@ Get red5-server dependencies
 
 Build red5-server with javadoc and source. 
 
-    mvn -Dmaven.test.skip=true -Dmaven.buildNumber.doUpdate=false -Dclassifier=bootstrap package
-
-Get red5-service dependencies
-
-    mvn dependency:copy-dependencies
-
-Build red5-service
-
-    mvn -Dmaven.test.skip=true package
+    mvn -Dmaven.test.skip=true -Dmaven.buildNumber.doUpdate=false package
 
 Download and unzip the commons daemon windows binaries. If the path needs to be updated in the NSIS script, it should be around line 85. Also the "ServiceRoot" parameter may need to be updated depending upon your directory layout.
 
