@@ -170,8 +170,8 @@ Section -post SEC0001
 	Call AdvReplaceInFile
 	
     # Add the service
-    ExecWait '"$INSTDIR\install-service.bat"'
-    ; send them to osflash
+    ;ExecWait '"$INSTDIR\install-service.bat"'
+    ; send them to google code site
     ExecShell "open" "http://red5.googlecode.com/"
 SectionEnd
 
@@ -191,7 +191,7 @@ done${UNSECTION_ID}:
 # Uninstaller sections
 Section /o -un.Main UNSEC0000
     # remove the service
-    ExecWait '"$INSTDIR\uninstall-service.bat"'
+    ;ExecWait '"$INSTDIR\uninstall-service.bat"'
     RmDir /r /REBOOTOK $INSTDIR
     DeleteRegValue HKLM "${REGKEY}\Components" Main
 SectionEnd
