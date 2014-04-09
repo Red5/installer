@@ -1,0 +1,15 @@
+
+Get red5-server dependencies
+    
+	mvn dependency:copy-dependencies
+
+Build red5-server with javadoc and source. 
+
+    mvn -Dmaven.test.skip=true -Dmaven.buildNumber.doUpdate=false package
+
+Download and unzip the commons daemon windows binaries. If the path needs to be updated in the NSIS script, it should be around line 85. Also the "ServiceRoot" parameter may need to be updated depending upon your directory layout.
+
+Unzip the red5-server-[Version].zip file into the target/installable directory
+
+Copy the flash/deploy directory from SVN into the target/installable/webapps/root/demos directory
+
