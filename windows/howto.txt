@@ -13,3 +13,33 @@ Unzip the red5-server-[Version].zip file into the target/installable directory
 
 Copy the flash/deploy directory from SVN into the target/installable/webapps/root/demos directory
 
+
+------------------------------------------------------------------------
+
+Use make_setupRed5Exe.sh to build automatically.
+Run this script on Ubuntu 14.04 LTS or compatible Linux Distribution.
+
+Usage:
+
+    $ ./make_setupRed5Exe.sh -h
+    Usage: ./make_setupRed5Exe.sh [OPTION] red5_version
+
+    red5_version is like this
+      - trunk
+      - 1.0.3
+      - 1.0.2
+
+    Options:
+      -c, --cleanbuild: remove working directory before build
+      -h, --help
+
+* specify 'trunk' if you want development version
+
+    $ ./make_setupRed5Exe.sh trunk => e.g) setup-Red5-1.0.4-SNAPSHOT.exe
+
+* use with '--cleanbuild' to build other version, like this
+
+    $ ./make_setupRed5Exe.sh --cleanbuild 1.0.3 => setup-Red5-1.0.3.exe is built if success
+
+You can confirm make_setupRed5Exe.log if failed.
+
