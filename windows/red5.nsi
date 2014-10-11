@@ -19,6 +19,7 @@ RequestExecutionLevel admin
 !define BuildRoot "..\..\red5-server"
 !define ServiceRoot "..\..\red5-service"
 !define ImageRoot "..\images"
+!define CommonsDaemonVersion "1.0.14"
 
 # MUI defines
 !define MUI_ICON ${ImageRoot}\red5.ico
@@ -80,7 +81,7 @@ Section -Main SEC0000
     SetOutPath $INSTDIR
     SetOverwrite on
     ; copy daemon binaries
-    File /r /x .svn /x .git /x *.txt ${ServiceRoot}\commons-daemon-1.0.15-bin-windows\*
+    File /r /x .svn /x .git /x *.txt ${ServiceRoot}\commons-daemon-${CommonsDaemonVersion}-bin-windows\*
     ; copy daemon scripts
     File /x .svn /x .git ${ServiceRoot}\src\main\daemon\*.bat
     ; copy the java files
