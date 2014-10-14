@@ -21,6 +21,10 @@ RequestExecutionLevel admin
 !define ImageRoot "..\images"
 !define CommonsDaemonVersion "1.0.14"
 
+# Additional Includes and Plugins
+!addincludedir .\NSIS_Includes
+!addplugindir .\NSIS_Plugins
+
 # MUI defines
 !define MUI_ICON ${ImageRoot}\red5.ico
 !define MUI_HEADERIMAGE
