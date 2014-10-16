@@ -18,6 +18,7 @@ Copy the flash/deploy directory from SVN into the target/installable/webapps/roo
 
 Use make_setupRed5Exe.sh to build automatically.
 Run this script on Ubuntu 14.04 LTS or compatible Linux Distribution.
+You can find setup-Red5-X.Y.Z.exe in work directroy after the script would run.
 
 Usage:
 
@@ -35,11 +36,11 @@ Usage:
 
 * specify 'trunk' if you want development version
 
-    $ ./make_setupRed5Exe.sh trunk => e.g) setup-Red5-1.0.4-SNAPSHOT.exe
+    $ ./make_setupRed5Exe.sh trunk => e.g) work/setup-Red5-1.0.4-SNAPSHOT.exe
 
 * use with '--cleanbuild' to build other version, like this
 
-    $ ./make_setupRed5Exe.sh --cleanbuild 1.0.3 => setup-Red5-1.0.3.exe is built if success
+    $ ./make_setupRed5Exe.sh --cleanbuild 1.0.3 => work/setup-Red5-1.0.3.exe is built if success
 
-You can confirm make_setupRed5Exe.log if failed.
+You can confirm work/make_setupRed5Exe.log if failed.
 
