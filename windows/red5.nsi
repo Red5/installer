@@ -12,12 +12,12 @@ RequestExecutionLevel admin
 
 # Defines
 !define REGKEY "SOFTWARE\$(^Name)"
-!define VERSION 1.0.2
+#!define VERSION 1.0.2  # should be specified "-DVERSION=x.y.z" as a command line parameter
 !define COMPANY "Red5 Server"
 !define DESCRIPTION "Red5 is an Open Source Media Server written in Java"
 !define URL http://red5.googlecode.com
-!define BuildRoot "..\..\red5-server"
-!define ServiceRoot "..\..\red5-service"
+!define BuildRoot ".\work\red5-server"
+!define ServiceRoot ".\work\red5-service"
 !define ImageRoot "..\images"
 !define CommonsDaemonVersion "1.0.14"
 
