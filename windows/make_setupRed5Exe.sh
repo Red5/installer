@@ -175,27 +175,20 @@ make_setup_exe() {
     local _version="$1"
     local version="$(echo $_version | cut -d "-" -f1)"
     local snapshot="$(echo $_version | cut -d "-" -f2)"
+    local setup_filename="setup-Red5-*.exe"
 
     log "** making setup.exe ..."
-    edit_red5_nsi $version
-    run_command "rm -f setup-Red5-*.exe"
-    run_command "makensis $RED5_NSI"
-    if [ "$snapshot" = "SNAPSHOT" ]; then
-        run_command "mv setup-Red5-*.exe setup-Red5-${_version}.exe"
-    fi
-}
-
-edit_red5_nsi() {
-    LAST_FUNCNAME=$FUNCNAME
-    local version="$1"
-    local build_root=".\/$WORK_DIR\/red5-server"
-    local service_root=".\/$WORK_DIR\/red5-service"
-
     run_command "git checkout $RED5_NSI"
-    sed -i "s/\!define VERSION .*/\!define VERSION $version/" $RED5_NSI
-    sed -i "s/\!define BuildRoot .*/\!define BuildRoot $build_root/" $RED5_NSI
-    sed -i "s/\!define ServiceRoot .*/\!define ServiceRoot $service_root/" $RED5_NSI
-    run_command "git diff $RED5_NSI"
+    run_command "rm -f ${WORK_DIR}/${setup_filename}"
+    run_command "makensis -DVERSION=$version $RED5_NSI"
+
+    [ ! -f $setup_filename ] && return $RET_ERROR
+
+    if [ "$snapshot" = "SNAPSHOT" ]; then
+        run_command "mv $setup_filename setup-Red5-${_version}.exe"
+    fi
+    run_command "mv $setup_filename ${WORK_DIR}/"
+    return $RET_OK
 }
 
 create_work_dir() {
