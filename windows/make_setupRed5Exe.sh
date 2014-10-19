@@ -218,6 +218,8 @@ check_needed_commands() {
         if [ $? -ne 0 ]; then
             error "** '$cmd' command is not found, need to install!"
             retval=$RET_ERROR
+        else
+            run_command "$cmd --version"
         fi
     done
     return $retval
