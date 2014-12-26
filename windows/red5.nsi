@@ -15,7 +15,7 @@ RequestExecutionLevel admin
 #!define VERSION 1.0.2  # should be specified "-DVERSION=x.y.z" as a command line parameter
 !define COMPANY "Red5 Server"
 !define DESCRIPTION "Red5 is an Open Source Media Server written in Java"
-!define URL http://red5.googlecode.com
+!define URL https://github.com/Red5
 !define BuildRoot ".\work\red5-server"
 !define ServiceRoot ".\work\red5-service"
 !define ImageRoot "..\images"
@@ -113,10 +113,10 @@ Section -post SEC0001
     SetOutPath $SMPROGRAMS\$StartMenuGroup
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Start $(^Name).lnk" $INSTDIR\red5.bat
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Stop $(^Name).lnk" $INSTDIR\red5-shutdown.bat
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\$(^Name) on the Web.lnk" "http://red5.googlecode.com/"
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\$(^Name) on the Web.lnk" "https://github.com/Red5/"
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\API documents.lnk" $INSTDIR\doc\apidocs\index.html
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Bugtracker.lnk" "https://code.google.com/p/red5/issues/list"
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Wiki.lnk" "https://code.google.com/p/red5/w/list"
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Bugtracker.lnk" "https://github.com/Red5/red5-server/issues"
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Wiki.lnk" "https://github.com/Red5/red5-server/wiki"
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk" $INSTDIR\uninstall.exe
     !insertmacro MUI_STARTMENU_WRITE_END
 
@@ -177,7 +177,7 @@ Section -post SEC0001
     # Add the service
     ;ExecWait '"$INSTDIR\install-service.bat"'
     ; send them to google code site
-    ExecShell "open" "http://red5.googlecode.com/"
+    ExecShell "open" "https://github.com/Red5/"
 SectionEnd
 
 # Macro for selecting uninstaller sections
