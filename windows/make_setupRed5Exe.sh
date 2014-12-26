@@ -136,8 +136,7 @@ get_red5_server() {
     fi
 
     run_command "rm -rf target"
-    run_command "mvn dependency:copy-dependencies"
-    run_command "mvn -Dmaven.test.skip=true -Dmaven.buildNumber.doUpdate=false package"
+    run_command "mvn -Dmaven.test.skip=true clean package -P assemble"
 
     [ ! -d "target" ] && return $RET_ERROR
 
@@ -245,8 +244,8 @@ usage() {
     echo
     echo "red5_version is like this"
     echo "  - trunk"
+    echo "  - 1.0.4"
     echo "  - 1.0.3"
-    echo "  - 1.0.2"
     echo
     echo "Options:"
     echo "  -c, --cleanbuild: remove working directory before build"
