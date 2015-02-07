@@ -20,8 +20,11 @@ COMMONS_DAEMON_DOWNLOAD_URL="$COMMONS_DAEMON_URL/commons-daemon"
 COMMONS_DAEMON_ARCHIVE_URL="$COMMONS_DAEMON_DOWNLOAD_URL/$COMMONS_DAEMON_VERSION"
 COMMONS_DAEMON_ARCHIVE_NAME="commons-daemon-$COMMONS_DAEMON_VERSION-bin-windows.zip"
 
-GOOGLECODE_URL="http://red5.googlecode.com"
-FLASH_DEMO_URL="$GOOGLECODE_URL/svn/flash/trunk/deploy/"
+# only needed for versions < 1.0.4
+if [ "$version" = "1.0.3"]; then
+    GOOGLECODE_URL="http://red5.googlecode.com"
+    FLASH_DEMO_URL="$GOOGLECODE_URL/svn/flash/trunk/deploy/"
+fi
 
 # getting version for trunk
 MAVEN_HELP_PLUGIN="org.apache.maven.plugins:maven-help-plugin:2.2:evaluate"
@@ -151,8 +154,6 @@ extract_red5_archive() {
     local target_dir="target"
     local installable_dir="$target_dir/installable"
     local extract_dir="$installable_dir/red5-server-${version}"
-    local demos_dir="$installable_dir/webapps/root/demos"
-    local flash_demo_dir="flash_demo"
 
     log "** target dir: $target_dir"
     run_command "mkdir ./$installable_dir"
@@ -160,13 +161,17 @@ extract_red5_archive() {
     run_command "mv $extract_dir/* $installable_dir"
     run_command "rmdir $extract_dir"
 
-    if [ ! -d $flash_demo_dir ]; then
-        log "** getting flash demo repository ..."
-        run_command "svn checkout $FLASH_DEMO_URL ./$flash_demo_dir"
+    if [ "$version" = "1.0.3"]; then
+        local demos_dir="$installable_dir/webapps/root/demos"
+        local flash_demo_dir="flash_demo"
+        if [ ! -d $flash_demo_dir ]; then
+            log "** getting flash demo repository ..."
+            run_command "svn checkout $FLASH_DEMO_URL ./$flash_demo_dir"
+        fi
+        run_command "rm -rf ./$flash_demo_dir/.svn"
+        run_command "cp -r $flash_demo_dir $demos_dir"
     fi
 
-    run_command "rm -rf ./$flash_demo_dir/.svn"
-    run_command "cp -r $flash_demo_dir $demos_dir"
 }
 
 make_setup_exe() {
@@ -244,6 +249,7 @@ usage() {
     echo
     echo "red5_version is like this"
     echo "  - trunk"
+    echo "  - 1.0.5"
     echo "  - 1.0.4"
     echo "  - 1.0.3"
     echo
