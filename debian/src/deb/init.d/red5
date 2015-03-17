@@ -2,15 +2,15 @@
 #
 # red5		red5 initscript
 #
-# Author:	Simon Eisenmann <simon@struktur.de>.
+# Author:	Simon Eisenmann <simon@struktur.de>
 #
 
 set -e
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-DESC="Red5 flash streaming server"
+DESC="Red5 server"
 NAME=red5
-RED5_HOME=/usr/lib/red5
+RED5_HOME=/opt/red5
 DAEMON=$RED5_HOME/$NAME.sh
 SHUTDOWN=$RED5_HOME/$NAME-shutdown.sh
 PIDFILE=/var/run/$NAME.pid

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.red5</groupId>
+    <artifactId>red5-server</artifactId>
+    <version>1.0.5-RELEASE</version>
+    <name>Red5 :: Server</name>
+    <description>The Red5 server</description>
+    <url>https://github.com/Red5/red5-server</url>
+    <inceptionYear>2005</inceptionYear>
+    <packaging>deb</packaging>
+    <organization>
+        <name>Red5</name>
+        <url>https://github.com/Red5</url>
+    </organization>
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+    <build>
+<!-- https://github.com/tcurdt/jdeb/blob/master/docs/maven.md -->
+	    <extensions>
+	      <!-- Add support for the "deb" packaging -->
+	      <extension>
+		<groupId>org.vafer</groupId>
+		<artifactId>jdeb</artifactId>
+                <version>1.4</version>
+	      </extension>
+   </extensions>
+        <plugins>
+            <plugin>
+                <groupId>org.vafer</groupId>
+                <artifactId>jdeb</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jdeb</goal>
+                        </goals>
+                        <configuration>
+                            <controlDir>${basedir}/src/deb/control/</controlDir>
+<installDir>/opt/red5</installDir>
+<!--
+<signPackage>true</signPackage>
+              <signMethod>dpkg-sig</signMethod>
+-->
+<verbose>true</verbose>
+                            <!-- It's important to use a classifier or the deb artifact will not be indexed by the nexus indexer -->
+                            <classifier>all</classifier>
+                            <dataSet>
+                                <data>
+                  <src>${project.basedir}/src/tarball/red5-server-1.0.5-RELEASE-server.tar.gz</src>
+                  <type>archive</type>
+                  <mapper>
+                    <type>perm</type>
+                    <strip>1</strip>
+                    <prefix>/opt/red5</prefix>
+                    <filemode>600</filemode>
+                  </mapper>
+                                </data>
+				<data>
+                                  <src>${basedir}/src/deb/init.d</src>
+                                  <type>directory</type>
+                                  <mapper>
+                                    <type>perm</type>
+                                    <prefix>/etc/init.d</prefix>
+                                    <user>loader</user>
+                                    <group>loader</group>
+                                  </mapper>
+                                </data>
+                            </dataSet>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <url>http://localhost:8081/nexus/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+</project>
