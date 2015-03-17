@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.red5</groupId>
     <artifactId>red5-server</artifactId>
@@ -28,15 +26,15 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
     <build>
-<!-- https://github.com/tcurdt/jdeb/blob/master/docs/maven.md -->
-	    <extensions>
-	      <!-- Add support for the "deb" packaging -->
-	      <extension>
-		<groupId>org.vafer</groupId>
-		<artifactId>jdeb</artifactId>
+        <!-- https://github.com/tcurdt/jdeb/blob/master/docs/maven.md -->
+        <extensions>
+            <!-- Add support for the "deb" packaging -->
+            <extension>
+                <groupId>org.vafer</groupId>
+                <artifactId>jdeb</artifactId>
                 <version>1.4</version>
-	      </extension>
-   </extensions>
+            </extension>
+        </extensions>
         <plugins>
             <plugin>
                 <groupId>org.vafer</groupId>
@@ -49,35 +47,36 @@
                             <goal>jdeb</goal>
                         </goals>
                         <configuration>
+                            <deb>${basedir}/target/red5-server_1.0.5_all.deb</deb>
                             <controlDir>${basedir}/src/deb/control/</controlDir>
-<installDir>/opt/red5</installDir>
-<!--
-<signPackage>true</signPackage>
-              <signMethod>dpkg-sig</signMethod>
--->
-<verbose>true</verbose>
+                            <installDir>/opt/red5</installDir>
+
+			    <signPackage>true</signPackage>
+                            <signMethod>dpkg-sig</signMethod>
+
+                            <verbose>true</verbose>
                             <!-- It's important to use a classifier or the deb artifact will not be indexed by the nexus indexer -->
                             <classifier>all</classifier>
                             <dataSet>
                                 <data>
-                  <src>${project.basedir}/src/tarball/red5-server-1.0.5-RELEASE-server.tar.gz</src>
-                  <type>archive</type>
-                  <mapper>
-                    <type>perm</type>
-                    <strip>1</strip>
-                    <prefix>/opt/red5</prefix>
-                    <filemode>600</filemode>
-                  </mapper>
+                                    <src>${project.basedir}/src/tarball/red5-server-1.0.5-RELEASE-server.tar.gz</src>
+                                    <type>archive</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <strip>1</strip>
+                                        <prefix>/opt/red5</prefix>
+                                        <filemode>600</filemode>
+                                    </mapper>
                                 </data>
-				<data>
-                                  <src>${basedir}/src/deb/init.d</src>
-                                  <type>directory</type>
-                                  <mapper>
-                                    <type>perm</type>
-                                    <prefix>/etc/init.d</prefix>
-                                    <user>loader</user>
-                                    <group>loader</group>
-                                  </mapper>
+                                <data>
+                                    <src>${basedir}/src/deb/init.d</src>
+                                    <type>directory</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>/etc/init.d</prefix>
+                                        <user>loader</user>
+                                        <group>loader</group>
+                                    </mapper>
                                 </data>
                             </dataSet>
                         </configuration>

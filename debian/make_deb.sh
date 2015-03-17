@@ -60,10 +60,15 @@ download() {
 get_tarball() {
     LAST_FUNCNAME=$FUNCNAME
     local version="$1"
-    # https://github.com/Red5/red5-server/releases/download/v1.0.5-RELEASE/red5-server-1.0.5-RELEASE-server.tar.gz
-    local url="${SERVER_URL}/releases/download/v${version}-RELEASE/red5-server-${version}-RELEASE-server.tar.gz"
-    log "** getting red5 tarball ..."
-    download $url red5-server-${version}-RELEASE-server.tar.gz
+    if [ -f "red5-server-${version}-RELEASE-server.tar.gz" ]; 
+    then
+       log "Tarball exists"
+    else
+        # https://github.com/Red5/red5-server/releases/download/v1.0.5-RELEASE/red5-server-1.0.5-RELEASE-server.tar.gz
+        local url="${SERVER_URL}/releases/download/v${version}-RELEASE/red5-server-${version}-RELEASE-server.tar.gz"
+        log "** getting red5 tarball ..."
+        download $url red5-server-${version}-RELEASE-server.tar.gz
+    fi
 }
 
 make_deb() {
