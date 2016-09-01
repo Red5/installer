@@ -20,12 +20,6 @@ COMMONS_DAEMON_DOWNLOAD_URL="$COMMONS_DAEMON_URL/commons-daemon"
 COMMONS_DAEMON_ARCHIVE_URL="$COMMONS_DAEMON_DOWNLOAD_URL/$COMMONS_DAEMON_VERSION"
 COMMONS_DAEMON_ARCHIVE_NAME="commons-daemon-$COMMONS_DAEMON_VERSION-bin-windows.zip"
 
-# only needed for versions < 1.0.4
-if [ "$version" = "1.0.3"]; then
-    GOOGLECODE_URL="http://red5.googlecode.com"
-    FLASH_DEMO_URL="$GOOGLECODE_URL/svn/flash/trunk/deploy/"
-fi
-
 # getting version for trunk
 MAVEN_HELP_PLUGIN="org.apache.maven.plugins:maven-help-plugin:2.2:evaluate"
 GREP_VERSION="eval egrep -v \"^\\[(INFO|WARNING)\\]\""
@@ -40,7 +34,6 @@ NEEDED_COMMANDS=(
     "git"
     "makensis"
     "mvn"
-    "svn"
     "tar"
     "unzip"
 )
@@ -83,6 +76,7 @@ re_create_dir() {
 download() {
     local url="$1"
     local archive_name="$2"
+    echo "Download $archive_name from $url"
     run_command "curl -# -L $url -o $archive_name"
 }
 
@@ -117,78 +111,39 @@ get_and_extract_commons_daemon_archive() {
 get_red5_server() {
     LAST_FUNCNAME=$FUNCNAME
     local version="$1"
-    local release_version="$1-RELEASE"
-    local release_tag="v$release_version"
-    local dir="red5-server"
+    echo "Get Red5 server ${version}"
+    SERVER_VERSION=${version}
+    # grab from releases
+    # https://github.com/Red5/red5-server/releases/download/v1.0.8-M10/red5-server-1.0.8-M10.tar.gz
+    local archive_name="red5-server-${version}.tar.gz"
+    local url="https://github.com/Red5/red5-server/releases/download/v${version}/${archive_name}"
+    log "** getting red5-server release..."
+    download $url $archive_name
 
-    if [ ! -d $dir ]; then
-        log "** getting red5-server repository ..."
-        run_command "git clone $SERVER_URL"
-    fi
+    run_command "tar zxvf $archive_name"
 
-    cd $dir
-    if [ "$version" = "trunk" ]; then
-      log "** getting trunk version ..."
-      run_command "git pull"
-      SERVER_VERSION=$(mvn $MAVEN_HELP_PLUGIN -Dexpression=project.version | $GREP_VERSION)
-      log "** target version: $SERVER_VERSION"
-    else
-      SERVER_VERSION=$release_version
-      log "** target version: $release_tag"
-      run_command "git checkout -b $release_tag $release_tag"
-    fi
-
-    run_command "rm -rf target"
-    run_command "mvn -Dmaven.test.skip=true clean package -P assemble"
-
-    [ ! -d "target" ] && return $RET_ERROR
-
-    extract_red5_archive $SERVER_VERSION
-    cd ..
-}
-
-extract_red5_archive() {
-    LAST_FUNCNAME=$FUNCNAME
-    local version="$1"
-    local archive_name="red5-server-${version}-server.tar.gz"
-    local target_dir="target"
-    local installable_dir="$target_dir/installable"
-    local extract_dir="$installable_dir/red5-server-${version}"
-
-    log "** target dir: $target_dir"
-    run_command "mkdir ./$installable_dir"
-    run_command "tar zxvf $target_dir/$archive_name -C $installable_dir"
-    run_command "mv $extract_dir/* $installable_dir"
-    run_command "rmdir $extract_dir"
-
-    if [ "$version" = "1.0.3"]; then
-        local demos_dir="$installable_dir/webapps/root/demos"
-        local flash_demo_dir="flash_demo"
-        if [ ! -d $flash_demo_dir ]; then
-            log "** getting flash demo repository ..."
-            run_command "svn checkout $FLASH_DEMO_URL ./$flash_demo_dir"
-        fi
-        run_command "rm -rf ./$flash_demo_dir/.svn"
-        run_command "cp -r $flash_demo_dir $demos_dir"
-    fi
-
+    # need to put the apidocs in red5-server/apidocs dir
+    #echo "Work: ${WORK_DIR}"
+    run_command "mkdir red5-server/apidocs"
+    echo "Javadocs are online at http://red5.org/javadoc/" > red5-server/apidocs/javadocs.txt
 }
 
 make_setup_exe() {
     LAST_FUNCNAME=$FUNCNAME
     local _version="$1"
+    echo "version: $1"
     local version="$(echo $_version | cut -d "-" -f1)"
     local snapshot="$(echo $_version | cut -d "-" -f2)"
+    echo "VIProductVersion: $version snapshot: $snapshot"
     local setup_filename="setup-Red5-*.exe"
 
     log "** making setup.exe ..."
-    run_command "git checkout $RED5_NSI"
     run_command "rm -f ${WORK_DIR}/${setup_filename}"
     run_command "makensis -DVERSION=$version $RED5_NSI"
 
     [ ! -f $setup_filename ] && return $RET_ERROR
 
-    if [ "$snapshot" = "SNAPSHOT" ]; then
+    if [ ! "$snapshot" = "RELEASE" ]; then
         run_command "mv $setup_filename setup-Red5-${_version}.exe"
     fi
     run_command "mv $setup_filename ${WORK_DIR}/"
@@ -249,9 +204,8 @@ usage() {
     echo
     echo "red5_version is like this"
     echo "  - trunk"
-    echo "  - 1.0.5"
-    echo "  - 1.0.4"
-    echo "  - 1.0.3"
+    echo "  - 1.0.8-M10"
+    echo "  - 1.0.7-RELEASE"
     echo
     echo "Options:"
     echo "  -c, --cleanbuild: remove working directory before build"

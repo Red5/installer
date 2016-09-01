@@ -2,7 +2,7 @@
 # Red5 NSIS script for java7 builds
 # Author: Paul Gregoire
 # Date: 09/29/2008
-# Updated: 04/07/2014
+# Updated: 09/01/2016
 #
 
 Name Red5
@@ -87,17 +87,12 @@ Section -Main SEC0000
     ; copy daemon binaries
     File /r /x .svn /x .git /x *.txt ${ServiceRoot}\commons-daemon-${CommonsDaemonVersion}-bin-windows\*
     ; copy daemon scripts
-    File /x .svn /x .git ${ServiceRoot}\src\main\daemon\*.bat
+    File /x .svn /x .git ${ServiceRoot}\src\main\daemon\*
     ; copy the java files
-    File /r /x war /x *.sh /x Makefile /x *.gz /x *.zip ${BuildRoot}\target\installable\*
-    ; cd to lib dir
-    ;SetOutPath $INSTDIR\lib
-    ; copy daemon libs
-    ;File /x .svn /x .git ${ServiceRoot}\target\red5-service*.jar
-    ;File /x .svn /x .git ${ServiceRoot}\target\dependency\commons-daemon*.jar
+    File /r /x war /x *.sh /x Makefile /x *.gz /x *.zip ${BuildRoot}\*
     ; cd and copy the docs
     SetOutPath $INSTDIR\doc
-	File /r /x .svn ${BuildRoot}\target\apidocs
+	File /r /x .svn ${BuildRoot}\apidocs
     ; create the log dir
     SetOutPath $INSTDIR\log
     ; create the temp dir

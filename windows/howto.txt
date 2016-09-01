@@ -11,8 +11,6 @@ Download and unzip the commons daemon windows binaries. If the path needs to be 
 
 Unzip the red5-server-[Version].zip file into the target/installable directory
 
-Copy the flash/deploy directory from SVN into the target/installable/webapps/root/demos directory
-
 
 ------------------------------------------------------------------------
 
