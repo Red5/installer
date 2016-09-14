@@ -217,6 +217,10 @@ main() {
     LAST_FUNCNAME=$FUNCNAME
     local version="$1"
     [ -z "$version" ] && usage && return $RET_OK
+    # "trunk" not supported until theres a good way to get the latest release number from github
+    if [ "$version" = "trunk" ]; then
+        version="1.0.8-M11"
+    fi
 
     log "* Start $PROG_NAME on $DATE"
 
