@@ -8,13 +8,12 @@ LOG_FILE="$(pwd)/$(echo ${PROG_NAME} | sed "s/\.sh//").log"
 
 # archive repositories for installing files
 GITHUB_URL="https://github.com"
-SERVICE_URL="$GITHUB_URL/Red5/red5-service"
 
 SERVER_VERSION=
 SERVER_URL="$GITHUB_URL/Red5/red5-server"
 
-MAVEN_URL="http://central.maven.org/maven2"
-COMMONS_DAEMON_VERSION="1.0.14"
+MAVEN_URL="https://repo1.maven.org/maven2"
+COMMONS_DAEMON_VERSION="1.4.0"
 COMMONS_DAEMON_URL="$MAVEN_URL/commons-daemon"
 COMMONS_DAEMON_DOWNLOAD_URL="$COMMONS_DAEMON_URL/commons-daemon"
 COMMONS_DAEMON_ARCHIVE_URL="$COMMONS_DAEMON_DOWNLOAD_URL/$COMMONS_DAEMON_VERSION"
@@ -26,17 +25,6 @@ GREP_VERSION="eval egrep -v \"^\\[(INFO|WARNING)\\]\""
 
 # NSIS settings
 RED5_NSI="red5.nsi"
-
-# requires
-NEEDED_COMMANDS=(
-    "curl"
-    "egrep"
-    "git"
-    "makensis"
-    "mvn"
-    "tar"
-    "unzip"
-)
 
 # command line options
 OPT_CLEAN_BUILD="false"
@@ -83,28 +71,14 @@ download() {
 #######################################################################
 # Functions
 #######################################################################
-get_red5_service() {
-    LAST_FUNCNAME=$FUNCNAME
-    local dir="red5-service"
-
-    if [ ! -d $dir ]; then
-        log "** getting red5-service repository ..."
-        run_command "git clone $SERVICE_URL ./$dir"
-    fi
-
-    cd $dir
-    get_and_extract_commons_daemon_archive
-    cd ..
-}
-
 get_and_extract_commons_daemon_archive() {
     LAST_FUNCNAME=$FUNCNAME
     local url="${COMMONS_DAEMON_ARCHIVE_URL}/$COMMONS_DAEMON_ARCHIVE_NAME"
     local dir=$(echo $COMMONS_DAEMON_ARCHIVE_NAME | sed "s/.zip//")
 
     log "** getting commons-daemon archive ..."
-    re_create_dir $dir
     download $url $COMMONS_DAEMON_ARCHIVE_NAME
+    re_create_dir $dir
     run_command "(cd ./$dir && unzip ../$COMMONS_DAEMON_ARCHIVE_NAME)"
 }
 
@@ -163,6 +137,17 @@ create_work_dir() {
     return $RET_OK
 }
 
+check_command() {
+    which $1 > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        error "** '$1' command is not found, need to install!"
+        return $RET_ERROR
+    else
+        run_command "$1 $2"
+    fi
+    return $RET_OK
+}
+
 check_needed_commands() {
     LAST_FUNCNAME=$FUNCNAME
     local i=
@@ -170,16 +155,13 @@ check_needed_commands() {
     local retval=$RET_OK
 
     log "* check commands this script uses"
-    for ((i=0; i<${#NEEDED_COMMANDS[@]}; i++))
+    for cmd in "curl " "egrep " "git " "makensis -VERSION" "mvn " "tar " "unzip " "jq "
     do
-        cmd=${NEEDED_COMMANDS[$i]}
-        which $cmd > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            error "** '$cmd' command is not found, need to install!"
-            retval=$RET_ERROR
-        else
-            run_command "$cmd --version"
-        fi
+        local cmd2="${cmd[1]}"
+        local ver="${cmd2:=--version}"
+
+        check_command $cmd $ver
+        retval=$(($retval + $?))
     done
     return $retval
 }
@@ -217,9 +199,9 @@ main() {
     LAST_FUNCNAME=$FUNCNAME
     local version="$1"
     [ -z "$version" ] && usage && return $RET_OK
-    # "trunk" not supported until theres a good way to get the latest release number from github
     if [ "$version" = "trunk" ]; then
-        version="1.0.8-M11"
+    	local ver=$(curl -s https://api.github.com/repos/Red5/red5-server/releases/latest|jq -r ".tag_name")
+        version=${ver:1}
     fi
 
     log "* Start $PROG_NAME on $DATE"
@@ -228,9 +210,9 @@ main() {
     cd $WORK_DIR
     log "** change dir to : $(pwd)"
 
-    # get install files from red5-server and red5-service
-    get_red5_service || return $?
+    # get install files from red5-server
     get_red5_server $version || return $?
+    get_and_extract_commons_daemon_archive || return $?
 
     cd ..
     log "** change dir to : $(pwd)"

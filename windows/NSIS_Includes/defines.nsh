@@ -1,5 +1,5 @@
 ;Defines to use with Dialogs.dll plugin and future ones.
-;Developed by Joel Almeida García AKA Lobo Lunar.
+;Developed by Joel Almeida GarcÃ­a AKA Lobo Lunar.
 
 ;Email: lobolunarnet@yahoo.com.mx
 
@@ -31,3 +31,4 @@
 !define VAR_EXEDIR 23 ;$EXEDIR
 !define VAR_LANGUAGE 24 ;$LANGUAGE
 !verbose 4
+

@@ -17,9 +17,8 @@ RequestExecutionLevel admin
 !define DESCRIPTION "Red5 is an Open Source Media Server written in Java"
 !define URL https://github.com/Red5
 !define BuildRoot ".\work\red5-server"
-!define ServiceRoot ".\work\red5-service"
 !define ImageRoot "..\images"
-!define CommonsDaemonVersion "1.0.14"
+!define CommonsDaemonVersion "1.4.0"
 
 # Additional Includes and Plugins
 !addincludedir .\NSIS_Includes
@@ -43,7 +42,7 @@ RequestExecutionLevel admin
 !include "defines.nsh"
 
 # Reserved Files
-ReserveFile "${NSISDIR}\Plugins\AdvSplash.dll"
+ReserveFile "${NSISDIR}/Plugins/amd64-unicode/AdvSplash.dll"
 
 # Variables
 Var StartMenuGroup
@@ -85,9 +84,7 @@ Section -Main SEC0000
     SetOutPath $INSTDIR
     SetOverwrite on
     ; copy daemon binaries
-    File /r /x .svn /x .git /x *.txt ${ServiceRoot}\commons-daemon-${CommonsDaemonVersion}-bin-windows\*
-    ; copy daemon scripts
-    File /x .svn /x .git ${ServiceRoot}\src\main\daemon\*
+    File /r /x .svn /x .git /x *.txt .\work\commons-daemon-${CommonsDaemonVersion}-bin-windows\*
     ; copy the java files
     File /r /x war /x *.sh /x Makefile /x *.gz /x *.zip ${BuildRoot}\*
     ; cd and copy the docs
@@ -170,7 +167,7 @@ Section -post SEC0001
 	Call AdvReplaceInFile
 	
     # Add the service
-    ;ExecWait '"$INSTDIR\install-service.bat"'
+    ExecWait '"$INSTDIR\install-service.bat"'
     ; send them to google code site
     ExecShell "open" "https://github.com/Red5/"
 SectionEnd
@@ -191,7 +188,7 @@ done${UNSECTION_ID}:
 # Uninstaller sections
 Section /o -un.Main UNSEC0000
     # remove the service
-    ;ExecWait '"$INSTDIR\uninstall-service.bat"'
+    ExecWait '"$INSTDIR\uninstall-service.bat"'
     RmDir /r /REBOOTOK $INSTDIR
     DeleteRegValue HKLM "${REGKEY}\Components" Main
 SectionEnd
