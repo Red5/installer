@@ -1,4 +1,4 @@
-Installer
+App Installer 
 =========
 
 Installer and any other build related script or code
